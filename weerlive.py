@@ -4,6 +4,8 @@ from datetime import datetime
 from dotenv import dotenv_values
 from sqlalchemy import (MetaData, create_engine, insert)
 
+from database import write_to_database
+
 def process():
     config = dotenv_values('.env')
 
@@ -14,21 +16,7 @@ def process():
     keys = ['temp', 'gtemp', 'samenv', 'lv', 'windr', 'winds', 'luchtd', 'dauwp', 'zicht', 'image']
     data = { key: data[key] for key in keys }
 
-    # Write to database
-    engine = create_engine(config['DATABASE_CONNECTION'])
-    with engine.connect() as conn:
-        # Get table from database
-        metadata = MetaData(bind=conn)
-        metadata.reflect(only=[config['WEERLIVE_TABLE']])
-        table = metadata.tables[config['WEERLIVE_TABLE']]
-
-        # Create & execute query
-        query = insert(table).values(**data)
-        try:
-            conn.execute(query)
-            print('Data written to database')
-        except Exception as e:
-            sys.exit(f'{datetime.now()} {e}')
+    write_to_database(config['DATABASE_CONNECTION'], config['WEERLIVE_TABLE'], data)
 
 def get_data(config):
     try:
