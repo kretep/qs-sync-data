@@ -19,3 +19,13 @@ def write_to_database(connection, table_name, row):
             print(datetime.now(), 'Data written to database')
         except Exception as e:
             sys.exit(f'{datetime.now()} {e}')
+
+def write_dataframe_to_database(connection, table_name, df):
+    
+    engine = create_engine(connection)
+    with engine.connect() as conn:
+        try:
+            df.to_sql(table_name, engine, if_exists='append', index=False)
+            print(datetime.now(), 'Data written to database')
+        except Exception as e:
+            sys.exit(f'{datetime.now()} {e}')
