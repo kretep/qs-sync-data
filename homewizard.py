@@ -1,7 +1,5 @@
-import sys
 import requests
 import json
-from datetime import datetime
 from dotenv import dotenv_values
 
 from database import write_to_database
@@ -16,9 +14,9 @@ def process():
     # Filter the keys that we want
     keys = ['total_power_export_t1_kwh', 'total_power_export_t2_kwh', 'total_power_import_t1_kwh', 'total_power_import_t2_kwh', 'active_power_w', 'total_gas_m3', 'gas_timestamp']
     data = { key: data[key] for key in keys }
-    print(datetime.now(), data)
 
-    write_to_database(config['DATABASE_CONNECTION'], config['TABLE_NAME'], data)
+    # Write
+    write_to_database(config['DATABASE_CONNECTION'], config['HOMEWIZARD_TABLE'], data)
 
 if __name__ == "__main__":
     process()
